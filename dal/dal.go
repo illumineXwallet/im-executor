@@ -3,6 +3,7 @@ package dal
 import (
 	_ "embed"
 	"fmt"
+	"strings"
 
 	"github.com/celer-network/goutils/log"
 	"github.com/celer-network/goutils/sqldb"
@@ -22,8 +23,14 @@ var db *DB
 func InitDB() *DB {
 	log.Infoln("Creating DB connection")
 	url := viper.GetString(types.KeyDbUrl)
+
+	if !strings.HasPrefix(url, "postgresql://") {
+		url = fmt.Sprintf("postgresql://root@%s/executor?sslmode=disable", url)
+	}
+
 	log.Infoln(url)
-	_db, err := sqldb.NewDb("postgres", fmt.Sprintf("postgresql://root@%s/executor?sslmode=disable", url), 4)
+
+	_db, err := sqldb.NewDb("postgres", url, 4)
 	if err != nil {
 		log.Fatalf("Failed to create db with url %s: %+v", url, err)
 	}
