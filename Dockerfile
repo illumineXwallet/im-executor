@@ -11,6 +11,7 @@ ADD go.mod go.sum /im-executor/
 RUN go mod download
 
 ADD . /im-executor
+RUN go mod tidy
 RUN go build -o /im-executor/bin/executor ./cmd/main
 
 FROM alpine:latest
