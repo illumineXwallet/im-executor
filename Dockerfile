@@ -1,4 +1,4 @@
-FROM golang:1.18-alpine as builder
+FROM docker.io/golang:1.18-alpine as builder
 
 RUN apk add --no-cache g++ git
 # override git so go can access private repos
@@ -14,7 +14,7 @@ ADD . /im-executor
 RUN go mod tidy
 RUN go build -o /im-executor/bin/executor ./cmd/main
 
-FROM alpine:latest
+FROM docker.io/alpine:latest
 VOLUME /executor/env
 WORKDIR /executor/env
 COPY --from=builder /im-executor/bin/executor /usr/local/bin
